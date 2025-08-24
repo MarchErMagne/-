@@ -3,6 +3,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from app.database.database import get_db
 from app.database.models import User, SubscriptionStatus
 from app.utils.keyboards import main_menu_keyboard, subscription_keyboard
@@ -23,106 +24,123 @@ async def start_command(message: types.Message, state: FSMContext):
     
     # Получаем или создаем пользователя
     async for db in get_db():
-        # Проверяем существование пользователя
-        result = await db.execute(
-            select(User).where(User.telegram_id == user_data.id)
-        )
-        user = result.scalar_one_or_none()
-        
-        if not user:
-            # Создаем нового пользователя
-            user = User(
-                telegram_id=user_data.id,
-                username=user_data.username,
-                first_name=user_data.first_name,
-                last_name=user_data.last_name,
-                language_code=user_data.language_code or "ru"
+        try:
+            # Проверяем существование пользователя
+            result = await db.execute(
+                select(User).where(User.telegram_id == user_data.id)
             )
-            db.add(user)
-            await db.commit()
-            await db.refresh(user)  # Обновляем объект после сохранения
-            logger.info(f"New user created: {user_data.id}")
+            user = result.scalar_one_or_none()
             
-            # Приветствие для нового пользователя
-            welcome_text = (
-                "🚀 <b>Добро пожаловать в TelegramSender Pro!</b>\n\n"
-                "Это мощная платформа для массовых рассылок с поддержкой:\n"
-                "📱 Telegram\n"
-                "📧 Email\n" 
-                "💬 WhatsApp\n"
-                "📞 SMS\n"
-                "🟣 Viber\n\n"
-                "🎯 <b>Возможности:</b>\n"
-                "• Умные рассылки с настройкой интервалов\n"
-                "• Детальная аналитика и отчеты\n"
-                "• AI-ассистент для создания контента\n"
-                "• Управление контактами и сегментация\n"
-                "• Защита от спам-фильтров\n\n"
-                "💰 <b>Тарифные планы:</b>\n"
-            )
-            
-            for plan_id, plan in SUBSCRIPTION_PLANS.items():
-                price_usd = plan["price"] / 100
-                welcome_text += f"• <b>{plan['name']}</b> - ${price_usd:.2f}/мес\n"
-                for feature in plan["features"]:
-                    welcome_text += f"  ✓ {feature}\n"
-                welcome_text += "\n"
-            
-            welcome_text += (
-                "🎁 <b>Специальное предложение!</b>\n"
-                "Попробуйте любой план бесплатно в течение 3 дней!\n\n"
-                "Нажмите кнопку ниже, чтобы выбрать подписку и начать работу."
-            )
-            
-            await message.answer(
-                welcome_text,
-                parse_mode="HTML",
-                reply_markup=subscription_keyboard()
-            )
-            
-        else:
-            # Обновляем данные существующего пользователя
-            user.username = user_data.username
-            user.first_name = user_data.first_name
-            user.last_name = user_data.last_name
-            user.updated_at = datetime.utcnow()
-            await db.commit()
-            
-            # Проверяем статус подписки
-            subscription_text = ""
-            if user.subscription_status == SubscriptionStatus.ACTIVE:
-                if user.subscription_expires:
-                    days_left = (user.subscription_expires - datetime.utcnow()).days
-                    if days_left > 0:
-                        subscription_text = f"✅ Активная подписка: {user.subscription_plan.capitalize()}\n📅 Осталось дней: {days_left}\n\n"
-                    else:
-                        # Подписка истекла
-                        user.subscription_status = SubscriptionStatus.EXPIRED
-                        await db.commit()
-                        subscription_text = "⚠️ Ваша подписка истекла! Продлите для продолжения работы.\n\n"
-                else:
-                    subscription_text = f"✅ Активная подписка: {user.subscription_plan.capitalize()}\n\n"
+            if not user:
+                # Создаем нового пользователя
+                user = User(
+                    telegram_id=user_data.id,
+                    username=user_data.username,
+                    first_name=user_data.first_name,
+                    last_name=user_data.last_name,
+                    language_code=user_data.language_code or "ru",
+                    subscription_status=SubscriptionStatus.EXPIRED
+                )
+                db.add(user)
+                try:
+                    await db.commit()
+                    await db.refresh(user)
+                    logger.info(f"New user created: {user_data.id}")
+                    is_new_user = True
+                except IntegrityError:
+                    # Пользователь уже существует, получаем его
+                    await db.rollback()
+                    result = await db.execute(
+                        select(User).where(User.telegram_id == user_data.id)
+                    )
+                    user = result.scalar_one_or_none()
+                    is_new_user = False
             else:
-                subscription_text = "⚠️ У вас нет активной подписки. Выберите план для начала работы.\n\n"
+                # Обновляем данные существующего пользователя
+                user.username = user_data.username
+                user.first_name = user_data.first_name
+                user.last_name = user_data.last_name
+                user.updated_at = datetime.utcnow()
+                await db.commit()
+                is_new_user = False
             
-            welcome_back_text = (
-                f"👋 <b>С возвращением, {user.first_name}!</b>\n\n"
-                f"{subscription_text}"
-                "🎛 <b>Главное меню:</b>\n"
-                "📊 <b>Мои кампании</b> - управление рассылками\n"
-                "📧 <b>Отправители</b> - настройка аккаунтов\n"
-                "👥 <b>Контакты</b> - управление базой\n"
-                "📈 <b>Аналитика</b> - отчеты и статистика\n"
-                "💳 <b>Подписка</b> - тарифы и оплата\n"
-                "🤖 <b>AI-Ассистент</b> - помощь с контентом\n\n"
-                "Выберите нужный раздел в меню ниже ⬇️"
-            )
-            
-            await message.answer(
-                welcome_back_text,
-                parse_mode="HTML",
-                reply_markup=main_menu_keyboard()
-            )
+            if is_new_user:
+                # Приветствие для нового пользователя
+                welcome_text = (
+                    "🚀 <b>Добро пожаловать в TelegramSender Pro!</b>\n\n"
+                    "Это мощная платформа для массовых рассылок с поддержкой:\n"
+                    "📱 Telegram\n"
+                    "📧 Email\n" 
+                    "💬 WhatsApp\n"
+                    "📞 SMS\n"
+                    "🟣 Viber\n\n"
+                    "🎯 <b>Возможности:</b>\n"
+                    "• Умные рассылки с настройкой интервалов\n"
+                    "• Детальная аналитика и отчеты\n"
+                    "• AI-ассистент для создания контента\n"
+                    "• Управление контактами и сегментация\n"
+                    "• Защита от спам-фильтров\n\n"
+                    "💰 <b>Тарифные планы:</b>\n"
+                )
+                
+                for plan_id, plan in SUBSCRIPTION_PLANS.items():
+                    price_usd = plan["price"] / 100
+                    welcome_text += f"• <b>{plan['name']}</b> - ${price_usd:.2f}/мес\n"
+                    for feature in plan["features"][:2]:  # Показываем только первые 2 фичи
+                        welcome_text += f"  ✓ {feature}\n"
+                    welcome_text += "\n"
+                
+                welcome_text += (
+                    "🎁 <b>Специальное предложение!</b>\n"
+                    "Попробуйте любой план бесплатно в течение 3 дней!\n\n"
+                    "Нажмите кнопку ниже, чтобы выбрать подписку и начать работу."
+                )
+                
+                await message.answer(
+                    welcome_text,
+                    parse_mode="HTML",
+                    reply_markup=subscription_keyboard()
+                )
+                
+            else:
+                # Проверяем статус подписки
+                subscription_text = ""
+                if user.subscription_status == SubscriptionStatus.ACTIVE:
+                    if user.subscription_expires:
+                        days_left = (user.subscription_expires - datetime.utcnow()).days
+                        if days_left > 0:
+                            subscription_text = f"✅ Активная подписка: {user.subscription_plan.capitalize()}\n📅 Осталось дней: {days_left}\n\n"
+                        else:
+                            # Подписка истекла
+                            user.subscription_status = SubscriptionStatus.EXPIRED
+                            await db.commit()
+                            subscription_text = "⚠️ Ваша подписка истекла! Продлите для продолжения работы.\n\n"
+                    else:
+                        subscription_text = f"✅ Активная подписка: {user.subscription_plan.capitalize()}\n\n"
+                else:
+                    subscription_text = "⚠️ У вас нет активной подписки. Выберите план для начала работы.\n\n"
+                
+                welcome_back_text = (
+                    f"👋 <b>С возвращением, {user.first_name}!</b>\n\n"
+                    f"{subscription_text}"
+                    "🎛 <b>Главное меню:</b>\n"
+                    "📊 <b>Мои кампании</b> - управление рассылками\n"
+                    "📧 <b>Отправители</b> - настройка аккаунтов\n"
+                    "👥 <b>Контакты</b> - управление базой\n"
+                    "📈 <b>Аналитика</b> - отчеты и статистика\n"
+                    "💳 <b>Подписка</b> - тарифы и оплата\n"
+                    "🤖 <b>AI-Ассистент</b> - помощь с контентом\n\n"
+                    "Выберите нужный раздел в меню ниже ⬇️"
+                )
+                
+                await message.answer(
+                    welcome_back_text,
+                    parse_mode="HTML",
+                    reply_markup=main_menu_keyboard()
+                )
+        except Exception as e:
+            logger.error(f"Error in start_command: {e}")
+            await message.answer("😔 Произошла ошибка. Попробуйте позже.")
 
 @router.message(F.text == "ℹ️ Помощь")
 @handle_errors

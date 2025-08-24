@@ -1303,3 +1303,5 @@ pydantic_core._pydantic_core.ValidationError: 1 validation error for Message
 from_user
   Instance is frozen [type=frozen_instance, input_value=User(id=6144039792, is_bo...rts_inline_queries=None), input_type=User]
     For further information visit https://errors.pydantic.dev/2.5/v/frozen_instance
+2025-08-24 11:43:34,351 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-08-24 11:43:34,359 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8441056636)

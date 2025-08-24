@@ -20,7 +20,7 @@ class AIStates(StatesGroup):
 @subscription_required(["pro", "premium"])
 @handle_errors
 @log_user_action("ai_assistant_menu")
-async def ai_assistant_menu(message: types.Message):
+async def ai_assistant_menu(message: types.Message, **kwargs):
     """Главное меню AI-ассистента"""
     
     ai = AIAssistant()
@@ -52,6 +52,43 @@ async def ai_assistant_menu(message: types.Message):
         parse_mode="HTML",
         reply_markup=ai_assistant_keyboard()
     )
+
+@router.callback_query(F.data == "ai_assistant_menu")
+@handle_errors
+async def back_to_ai_menu_callback(callback: types.CallbackQuery, state: FSMContext):
+    """Callback для возврата в меню AI-ассистента"""
+    await state.clear()
+    
+    ai = AIAssistant()
+    
+    if not ai.is_available():
+        await callback.message.edit_text(
+            "❌ <b>AI-ассистент недоступен</b>\n\n"
+            "Для использования AI-ассистента необходимо настроить OpenAI API ключ.\n"
+            "Обратитесь к администратору для настройки.",
+            parse_mode="HTML",
+            reply_markup=back_keyboard("back_to_menu")
+        )
+        return
+    
+    ai_text = (
+        "🤖 <b>AI-Ассистент</b>\n\n"
+        "Ваш умный помощник для создания эффективного контента!\n\n"
+        "🎯 <b>Возможности:</b>\n"
+        "• ✍️ Генерация текстов рассылок\n"
+        "• 🛡 Проверка на спам-фильтры\n"
+        "• 🎯 Улучшение призывов к действию\n"
+        "• 🔄 A/B тестирование вариантов\n"
+        "• 📊 Анализ тональности текста\n\n"
+        "Выберите нужную функцию:"
+    )
+    
+    await callback.message.edit_text(
+        ai_text,
+        parse_mode="HTML",
+        reply_markup=ai_assistant_keyboard()
+    )
+    await callback.answer()
 
 @router.callback_query(F.data == "ai_generate")
 @handle_errors
@@ -449,47 +486,3 @@ async def check_generated_spam(callback: types.CallbackQuery, state: FSMContext)
     )
     
     await callback.answer()
-
-@router.message(F.text == "🤖 AI-Ассистент")
-@subscription_required(["pro", "premium"])
-@handle_errors
-@log_user_action("ai_assistant_menu")
-async def ai_assistant_menu(message: types.Message, **kwargs):  # Добавляем **kwargs
-    """Главное меню AI-ассистента"""
-    
-    ai = AIAssistant()
-    
-    if not ai.is_available():
-        await message.answer(
-            "❌ <b>AI-ассистент недоступен</b>\n\n"
-            "Для использования AI-ассистента необходимо настроить OpenAI API ключ.\n"
-            "Обратитесь к администратору для настройки.",
-            parse_mode="HTML",
-            reply_markup=back_keyboard("back_to_menu")
-        )
-        return
-    
-    ai_text = (
-        "🤖 <b>AI-Ассистент</b>\n\n"
-        "Ваш умный помощник для создания эффективного контента!\n\n"
-        "🎯 <b>Возможности:</b>\n"
-        "• ✍️ Генерация текстов рассылок\n"
-        "• 🛡 Проверка на спам-фильтры\n"
-        "• 🎯 Улучшение призывов к действию\n"
-        "• 🔄 A/B тестирование вариантов\n"
-        "• 📊 Анализ тональности текста\n\n"
-        "Выберите нужную функцию:"
-    )
-    
-    await message.answer(
-        ai_text,
-        parse_mode="HTML",
-        reply_markup=ai_assistant_keyboard()
-    )
-
-@router.callback_query(F.data == "ai_assistant_menu")
-@handle_errors
-async def back_to_ai_menu(callback: types.CallbackQuery, state: FSMContext):
-    """Возврат в меню AI-ассистента"""
-    await state.clear()
-    await ai_assistant_menu(callback.message)
