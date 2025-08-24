@@ -1,0 +1,1305 @@
+2025-08-21 13:37:18,206 - app.utils.decorators - ERROR - Error in start_command: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.language_code, users.is_premium, users.subscription_plan, users.subscription_expires, users.subscription_status, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::INTEGER]
+[parameters: (7594615184,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+Traceback (most recent call last):
+  File "asyncpg/protocol/prepared_stmt.pyx", line 175, in asyncpg.protocol.protocol.PreparedStatementState._encode_bind_msg
+  File "asyncpg/protocol/codecs/base.pyx", line 227, in asyncpg.protocol.protocol.Codec.encode
+  File "asyncpg/protocol/codecs/base.pyx", line 129, in asyncpg.protocol.protocol.Codec.encode_scalar
+  File "asyncpg/pgproto/./codecs/int.pyx", line 60, in asyncpg.pgproto.pgproto.int4_encode
+OverflowError: value out of int32 range
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 546, in _prepare_and_execute
+    self._rows = await prepared_stmt.fetch(*parameters)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 176, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 241, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 230, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 186, in bind_execute
+  File "asyncpg/protocol/prepared_stmt.pyx", line 204, in asyncpg.protocol.protocol.PreparedStatementState._encode_bind_msg
+asyncpg.exceptions.DataError: invalid input for query argument $1: 7594615184 (value out of int32 range)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.Error: <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 126, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 117, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/start.py", line 27, in start_command
+    result = await db.execute(
+             ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 455, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 200, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2308, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.DBAPIError: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.language_code, users.is_premium, users.subscription_plan, users.subscription_expires, users.subscription_status, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::INTEGER]
+[parameters: (7594615184,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-08-21 13:37:18,216 - app.utils.decorators - ERROR - Error in start_command: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.language_code, users.is_premium, users.subscription_plan, users.subscription_expires, users.subscription_status, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::INTEGER]
+[parameters: (7594615184,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+Traceback (most recent call last):
+  File "asyncpg/protocol/prepared_stmt.pyx", line 175, in asyncpg.protocol.protocol.PreparedStatementState._encode_bind_msg
+  File "asyncpg/protocol/codecs/base.pyx", line 227, in asyncpg.protocol.protocol.Codec.encode
+  File "asyncpg/protocol/codecs/base.pyx", line 129, in asyncpg.protocol.protocol.Codec.encode_scalar
+  File "asyncpg/pgproto/./codecs/int.pyx", line 60, in asyncpg.pgproto.pgproto.int4_encode
+OverflowError: value out of int32 range
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 546, in _prepare_and_execute
+    self._rows = await prepared_stmt.fetch(*parameters)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 176, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 241, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 230, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 186, in bind_execute
+  File "asyncpg/protocol/prepared_stmt.pyx", line 204, in asyncpg.protocol.protocol.PreparedStatementState._encode_bind_msg
+asyncpg.exceptions.DataError: invalid input for query argument $1: 7594615184 (value out of int32 range)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.Error: <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 126, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 117, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/start.py", line 27, in start_command
+    result = await db.execute(
+             ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 455, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 200, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2308, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.DBAPIError: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.language_code, users.is_premium, users.subscription_plan, users.subscription_expires, users.subscription_status, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::INTEGER]
+[parameters: (7594615184,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-08-21 13:37:30,753 - app.utils.decorators - ERROR - Error in start_command: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.language_code, users.is_premium, users.subscription_plan, users.subscription_expires, users.subscription_status, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::INTEGER]
+[parameters: (7594615184,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+Traceback (most recent call last):
+  File "asyncpg/protocol/prepared_stmt.pyx", line 175, in asyncpg.protocol.protocol.PreparedStatementState._encode_bind_msg
+  File "asyncpg/protocol/codecs/base.pyx", line 227, in asyncpg.protocol.protocol.Codec.encode
+  File "asyncpg/protocol/codecs/base.pyx", line 129, in asyncpg.protocol.protocol.Codec.encode_scalar
+  File "asyncpg/pgproto/./codecs/int.pyx", line 60, in asyncpg.pgproto.pgproto.int4_encode
+OverflowError: value out of int32 range
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 546, in _prepare_and_execute
+    self._rows = await prepared_stmt.fetch(*parameters)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 176, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 241, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 230, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 186, in bind_execute
+  File "asyncpg/protocol/prepared_stmt.pyx", line 204, in asyncpg.protocol.protocol.PreparedStatementState._encode_bind_msg
+asyncpg.exceptions.DataError: invalid input for query argument $1: 7594615184 (value out of int32 range)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.Error: <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 126, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 117, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/start.py", line 27, in start_command
+    result = await db.execute(
+             ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 455, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 200, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2308, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.DBAPIError: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.language_code, users.is_premium, users.subscription_plan, users.subscription_expires, users.subscription_status, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::INTEGER]
+[parameters: (7594615184,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-08-21 13:44:24,826 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-21 13:49:07,182 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-21 13:50:15,473 - app.utils.decorators - ERROR - Error in start_command: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.language_code, users.is_premium, users.subscription_plan, users.subscription_expires, users.subscription_status, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::INTEGER]
+[parameters: (7594615184,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+Traceback (most recent call last):
+  File "asyncpg/protocol/prepared_stmt.pyx", line 175, in asyncpg.protocol.protocol.PreparedStatementState._encode_bind_msg
+  File "asyncpg/protocol/codecs/base.pyx", line 227, in asyncpg.protocol.protocol.Codec.encode
+  File "asyncpg/protocol/codecs/base.pyx", line 129, in asyncpg.protocol.protocol.Codec.encode_scalar
+  File "asyncpg/pgproto/./codecs/int.pyx", line 60, in asyncpg.pgproto.pgproto.int4_encode
+OverflowError: value out of int32 range
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 546, in _prepare_and_execute
+    self._rows = await prepared_stmt.fetch(*parameters)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 176, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 241, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 230, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 186, in bind_execute
+  File "asyncpg/protocol/prepared_stmt.pyx", line 204, in asyncpg.protocol.protocol.PreparedStatementState._encode_bind_msg
+asyncpg.exceptions.DataError: invalid input for query argument $1: 7594615184 (value out of int32 range)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.Error: <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 126, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 117, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/start.py", line 27, in start_command
+    result = await db.execute(
+             ^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 455, in execute
+    result = await greenlet_spawn(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 200, in greenlet_spawn
+    result = context.throw(*sys.exc_info())
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2308, in execute
+    return self._execute_internal(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 2190, in _execute_internal
+    result: Result[Any] = compile_state_cls.orm_execute_statement(
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/context.py", line 293, in orm_execute_statement
+    result = conn.execute(
+             ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.DBAPIError: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 7594615184 (value out of int32 range)
+[SQL: SELECT users.id, users.telegram_id, users.username, users.first_name, users.last_name, users.language_code, users.is_premium, users.subscription_plan, users.subscription_expires, users.subscription_status, users.created_at, users.updated_at 
+FROM users 
+WHERE users.telegram_id = $1::INTEGER]
+[parameters: (7594615184,)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-08-21 13:53:11,898 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-22 23:28:55,187 - app.handlers.subscription - ERROR - Error creating invoice: CryptoPay API error: UNAUTHORIZED
+2025-08-22 23:30:11,285 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-22 23:30:39,738 - app.handlers.subscription - ERROR - Error creating invoice: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 32229941 (expected str, got int)
+[SQL: UPDATE payments SET crypto_pay_id=$1::VARCHAR WHERE payments.id = $2::INTEGER]
+[parameters: (32229941, 1)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-08-22 23:33:12,133 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-22 23:33:44,893 - app.handlers.subscription - ERROR - Error creating invoice: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 32230037 (expected str, got int)
+[SQL: UPDATE payments SET crypto_pay_id=$1::VARCHAR WHERE payments.id = $2::INTEGER]
+[parameters: (32230037, 2)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-08-22 23:37:00,713 - app.handlers.subscription - ERROR - Error creating invoice: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 32230671 (expected str, got int)
+[SQL: UPDATE payments SET crypto_pay_id=$1::VARCHAR WHERE payments.id = $2::INTEGER]
+[parameters: (32230671, 3)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-08-22 23:38:09,558 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-22 23:40:31,270 - app.handlers.subscription - ERROR - Error checking payment: 'status'
+2025-08-22 23:44:07,483 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 11:08:37,928 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-08-23 11:08:37,931 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8441056636)
+2025-08-23 11:12:01,955 - app.handlers.subscription - ERROR - Error checking payment: 'status'
+2025-08-23 11:24:56,506 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 11:31:25,174 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 11:35:58,712 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 11:56:25,000 - app.utils.decorators - ERROR - Error in start_command: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+[SQL: INSERT INTO users (telegram_id, username, first_name, last_name, language_code, is_premium, subscription_plan, subscription_expires, subscription_status, created_at, updated_at) VALUES ($1::BIGINT, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::BOOLEAN, $7::VARCHAR, $8::TIMESTAMP WITHOUT TIME ZONE, $9::subscriptionstatus, now(), now()) RETURNING users.id, users.created_at, users.updated_at]
+[parameters: (7594615184, 'shwarzcc', 'Cc', None, 'ru', False, None, None, 'EXPIRED')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 546, in _prepare_and_execute
+    self._rows = await prepared_stmt.fetch(*parameters)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 176, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 241, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 230, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 207, in bind_execute
+asyncpg.exceptions.UniqueViolationError: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError: <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 130, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 121, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/start.py", line 42, in start_command
+    await db.commit()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 1011, in commit
+    await greenlet_spawn(self.sync_session.commit)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 202, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1969, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1256, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1231, in _prepare_impl
+    self.session.flush()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4312, in flush
+    self._flush(objects)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4447, in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4408, in _flush
+    flush_context.execute()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 1227, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.IntegrityError: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+[SQL: INSERT INTO users (telegram_id, username, first_name, last_name, language_code, is_premium, subscription_plan, subscription_expires, subscription_status, created_at, updated_at) VALUES ($1::BIGINT, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::BOOLEAN, $7::VARCHAR, $8::TIMESTAMP WITHOUT TIME ZONE, $9::subscriptionstatus, now(), now()) RETURNING users.id, users.created_at, users.updated_at]
+[parameters: (7594615184, 'shwarzcc', 'Cc', None, 'ru', False, None, None, 'EXPIRED')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-08-23 11:56:25,013 - app.utils.decorators - ERROR - Error in start_command: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+[SQL: INSERT INTO users (telegram_id, username, first_name, last_name, language_code, is_premium, subscription_plan, subscription_expires, subscription_status, created_at, updated_at) VALUES ($1::BIGINT, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::BOOLEAN, $7::VARCHAR, $8::TIMESTAMP WITHOUT TIME ZONE, $9::subscriptionstatus, now(), now()) RETURNING users.id, users.created_at, users.updated_at]
+[parameters: (7594615184, 'shwarzcc', 'Cc', None, 'ru', False, None, None, 'EXPIRED')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 546, in _prepare_and_execute
+    self._rows = await prepared_stmt.fetch(*parameters)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 176, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 241, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 230, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 207, in bind_execute
+asyncpg.exceptions.UniqueViolationError: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError: <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 130, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 121, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/start.py", line 42, in start_command
+    await db.commit()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 1011, in commit
+    await greenlet_spawn(self.sync_session.commit)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 202, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1969, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1256, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1231, in _prepare_impl
+    self.session.flush()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4312, in flush
+    self._flush(objects)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4447, in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4408, in _flush
+    flush_context.execute()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 1227, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.IntegrityError: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+[SQL: INSERT INTO users (telegram_id, username, first_name, last_name, language_code, is_premium, subscription_plan, subscription_expires, subscription_status, created_at, updated_at) VALUES ($1::BIGINT, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::BOOLEAN, $7::VARCHAR, $8::TIMESTAMP WITHOUT TIME ZONE, $9::subscriptionstatus, now(), now()) RETURNING users.id, users.created_at, users.updated_at]
+[parameters: (7594615184, 'shwarzcc', 'Cc', None, 'ru', False, None, None, 'EXPIRED')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-08-23 11:56:25,016 - app.utils.decorators - ERROR - Error in start_command: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+[SQL: INSERT INTO users (telegram_id, username, first_name, last_name, language_code, is_premium, subscription_plan, subscription_expires, subscription_status, created_at, updated_at) VALUES ($1::BIGINT, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::BOOLEAN, $7::VARCHAR, $8::TIMESTAMP WITHOUT TIME ZONE, $9::subscriptionstatus, now(), now()) RETURNING users.id, users.created_at, users.updated_at]
+[parameters: (7594615184, 'shwarzcc', 'Cc', None, 'ru', False, None, None, 'EXPIRED')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 546, in _prepare_and_execute
+    self._rows = await prepared_stmt.fetch(*parameters)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 176, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 241, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 230, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 207, in bind_execute
+asyncpg.exceptions.UniqueViolationError: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError: <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 130, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 121, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/start.py", line 42, in start_command
+    await db.commit()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 1011, in commit
+    await greenlet_spawn(self.sync_session.commit)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 202, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1969, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1256, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1231, in _prepare_impl
+    self.session.flush()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4312, in flush
+    self._flush(objects)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4447, in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4408, in _flush
+    flush_context.execute()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 1227, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.IntegrityError: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+[SQL: INSERT INTO users (telegram_id, username, first_name, last_name, language_code, is_premium, subscription_plan, subscription_expires, subscription_status, created_at, updated_at) VALUES ($1::BIGINT, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::BOOLEAN, $7::VARCHAR, $8::TIMESTAMP WITHOUT TIME ZONE, $9::subscriptionstatus, now(), now()) RETURNING users.id, users.created_at, users.updated_at]
+[parameters: (7594615184, 'shwarzcc', 'Cc', None, 'ru', False, None, None, 'EXPIRED')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-08-23 11:56:25,020 - app.utils.decorators - ERROR - Error in start_command: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+[SQL: INSERT INTO users (telegram_id, username, first_name, last_name, language_code, is_premium, subscription_plan, subscription_expires, subscription_status, created_at, updated_at) VALUES ($1::BIGINT, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::BOOLEAN, $7::VARCHAR, $8::TIMESTAMP WITHOUT TIME ZONE, $9::subscriptionstatus, now(), now()) RETURNING users.id, users.created_at, users.updated_at]
+[parameters: (7594615184, 'shwarzcc', 'Cc', None, 'ru', False, None, None, 'EXPIRED')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 546, in _prepare_and_execute
+    self._rows = await prepared_stmt.fetch(*parameters)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 176, in fetch
+    data = await self.__bind_execute(args, 0, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 241, in __bind_execute
+    data, status, _ = await self.__do_execute(
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/asyncpg/prepared_stmt.py", line 230, in __do_execute
+    return await executor(protocol)
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "asyncpg/protocol/protocol.pyx", line 207, in bind_execute
+asyncpg.exceptions.UniqueViolationError: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.dialects.postgresql.asyncpg.AsyncAdapt_asyncpg_dbapi.IntegrityError: <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 130, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 121, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/start.py", line 42, in start_command
+    await db.commit()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/ext/asyncio/session.py", line 1011, in commit
+    await greenlet_spawn(self.sync_session.commit)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 202, in greenlet_spawn
+    result = context.switch(value)
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1969, in commit
+    trans.commit(_to_root=True)
+  File "<string>", line 2, in commit
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1256, in commit
+    self._prepare_impl()
+  File "<string>", line 2, in _prepare_impl
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py", line 139, in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 1231, in _prepare_impl
+    self.session.flush()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4312, in flush
+    self._flush(objects)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4447, in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 146, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/session.py", line 4408, in _flush
+    flush_context.execute()
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 466, in execute
+    rec.execute(self)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py", line 1227, in _emit_insert_statements
+    result = connection.execute(
+             ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1416, in execute
+    return meth(
+           ^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/sql/elements.py", line 517, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1639, in _execute_clauseelement
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1848, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1988, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2344, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1969, in _exec_single_context
+    self.dialect.do_execute(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 922, in do_execute
+    cursor.execute(statement, parameters)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 580, in execute
+    self._adapt_connection.await_(
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 130, in await_only
+    return current.driver.switch(awaitable)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/util/_concurrency_py3k.py", line 195, in greenlet_spawn
+    value = await result
+            ^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 558, in _prepare_and_execute
+    self._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 509, in _handle_exception
+    self._adapt_connection._handle_exception(error)
+  File "/usr/local/lib/python3.12/site-packages/sqlalchemy/dialects/postgresql/asyncpg.py", line 797, in _handle_exception
+    raise translated_error from error
+sqlalchemy.exc.IntegrityError: (sqlalchemy.dialects.postgresql.asyncpg.IntegrityError) <class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint "users_telegram_id_key"
+DETAIL:  Key (telegram_id)=(7594615184) already exists.
+[SQL: INSERT INTO users (telegram_id, username, first_name, last_name, language_code, is_premium, subscription_plan, subscription_expires, subscription_status, created_at, updated_at) VALUES ($1::BIGINT, $2::VARCHAR, $3::VARCHAR, $4::VARCHAR, $5::VARCHAR, $6::BOOLEAN, $7::VARCHAR, $8::TIMESTAMP WITHOUT TIME ZONE, $9::subscriptionstatus, now(), now()) RETURNING users.id, users.created_at, users.updated_at]
+[parameters: (7594615184, 'shwarzcc', 'Cc', None, 'ru', False, None, None, 'EXPIRED')]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2025-08-23 11:59:00,782 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 11:59:53,617 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 12:02:47,409 - app.handlers.subscription - ERROR - Error creating invoice: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 32253663 (expected str, got int)
+[SQL: UPDATE payments SET crypto_pay_id=$1::VARCHAR WHERE payments.id = $2::INTEGER]
+[parameters: (32253663, 1)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-08-23 12:09:00,023 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 12:09:05,284 - app.handlers.subscription - ERROR - Error creating invoice: (sqlalchemy.dialects.postgresql.asyncpg.Error) <class 'asyncpg.exceptions.DataError'>: invalid input for query argument $1: 32254007 (expected str, got int)
+[SQL: UPDATE payments SET crypto_pay_id=$1::VARCHAR WHERE payments.id = $2::INTEGER]
+[parameters: (32254007, 2)]
+(Background on this error at: https://sqlalche.me/e/20/dbapi)
+2025-08-23 12:10:00,650 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 12:27:21,834 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 12:27:38,277 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 12:33:11,999 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 12:33:21,839 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 13:22:46,696 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - Request timeout error
+2025-08-23 13:22:46,698 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8441056636)
+2025-08-23 14:40:37,694 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-08-23 14:40:37,721 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8441056636)
+2025-08-23 20:23:41,977 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 20:26:16,415 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 20:38:59,629 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 20:42:26,189 - app.utils.decorators - ERROR - Error in ai_assistant_menu: ai_assistant_menu() got an unexpected keyword argument 'user'
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 142, in wrapper
+    return await func(event, *args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ai_assistant_menu() got an unexpected keyword argument 'user'
+2025-08-23 20:45:59,402 - app.utils.decorators - ERROR - Error in select_campaign_type: 'start' is not a valid SenderType
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/campaigns.py", line 165, in select_campaign_type
+    sender_type = SenderType(campaign_type)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 751, in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 1170, in __new__
+    raise ve_exc
+ValueError: 'start' is not a valid SenderType
+2025-08-23 20:46:14,341 - app.utils.decorators - ERROR - Error in select_campaign_type: 'edit' is not a valid SenderType
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/campaigns.py", line 165, in select_campaign_type
+    sender_type = SenderType(campaign_type)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 751, in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 1170, in __new__
+    raise ve_exc
+ValueError: 'edit' is not a valid SenderType
+2025-08-23 20:46:33,335 - app.utils.decorators - ERROR - Error in select_campaign_type: 'start' is not a valid SenderType
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/campaigns.py", line 165, in select_campaign_type
+    sender_type = SenderType(campaign_type)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 751, in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 1170, in __new__
+    raise ve_exc
+ValueError: 'start' is not a valid SenderType
+2025-08-23 20:51:09,621 - app.utils.decorators - ERROR - Error in select_campaign_type: 'start' is not a valid SenderType
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/campaigns.py", line 165, in select_campaign_type
+    sender_type = SenderType(campaign_type)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 751, in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 1170, in __new__
+    raise ve_exc
+ValueError: 'start' is not a valid SenderType
+2025-08-23 20:56:42,556 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-23 20:59:14,057 - app.utils.decorators - ERROR - Error in back_to_senders_menu: 1 validation error for Message
+from_user
+  Instance is frozen [type=frozen_instance, input_value=User(id=6144039792, is_bo...rts_inline_queries=None), input_type=User]
+    For further information visit https://errors.pydantic.dev/2.5/v/frozen_instance
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/senders.py", line 413, in back_to_senders_menu
+    fake_message.from_user = callback.from_user
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 780, in __setattr__
+    self._check_frozen(name, value)
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 844, in _check_frozen
+    raise pydantic_core.ValidationError.from_exception_data(self.__class__.__name__, [error])
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Message
+from_user
+  Instance is frozen [type=frozen_instance, input_value=User(id=6144039792, is_bo...rts_inline_queries=None), input_type=User]
+    For further information visit https://errors.pydantic.dev/2.5/v/frozen_instance
+2025-08-23 21:10:16,832 - app.utils.decorators - ERROR - Error in back_to_senders_menu: 1 validation error for Message
+from_user
+  Instance is frozen [type=frozen_instance, input_value=User(id=6144039792, is_bo...rts_inline_queries=None), input_type=User]
+    For further information visit https://errors.pydantic.dev/2.5/v/frozen_instance
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/senders.py", line 413, in back_to_senders_menu
+    fake_message.from_user = callback.from_user
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 780, in __setattr__
+    self._check_frozen(name, value)
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 844, in _check_frozen
+    raise pydantic_core.ValidationError.from_exception_data(self.__class__.__name__, [error])
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Message
+from_user
+  Instance is frozen [type=frozen_instance, input_value=User(id=6144039792, is_bo...rts_inline_queries=None), input_type=User]
+    For further information visit https://errors.pydantic.dev/2.5/v/frozen_instance
+2025-08-24 01:06:20,086 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ServerDisconnectedError: Server disconnected
+2025-08-24 01:06:20,107 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 8441056636)
+2025-08-24 01:08:37,455 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-24 01:09:56,166 - app.utils.decorators - ERROR - Error in back_to_senders_menu: name 'SubscriptionStatus' is not defined
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/senders.py", line 595, in back_to_senders_menu
+    if user.subscription_status != SubscriptionStatus.ACTIVE:
+                                   ^^^^^^^^^^^^^^^^^^
+NameError: name 'SubscriptionStatus' is not defined
+2025-08-24 01:11:34,727 - app.utils.decorators - ERROR - Error in back_to_senders_menu: name 'SubscriptionStatus' is not defined
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/senders.py", line 595, in back_to_senders_menu
+    if user.subscription_status != SubscriptionStatus.ACTIVE:
+                                   ^^^^^^^^^^^^^^^^^^
+NameError: name 'SubscriptionStatus' is not defined
+2025-08-24 01:12:11,909 - app.utils.decorators - ERROR - Error in process_campaign_name: Telegram server says - Bad Request: message can't be edited
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/campaigns.py", line 307, in process_campaign_name
+    await ask_for_contacts_selection(message, state, contacts_count, sender_type)
+  File "/app/app/handlers/campaigns.py", line 415, in ask_for_contacts_selection
+    await message.edit_text(
+  File "/usr/local/lib/python3.12/site-packages/aiogram/methods/base.py", line 84, in emit
+    return await bot(self)
+           ^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/client/bot.py", line 492, in __call__
+    return await self.session(self, method, timeout=request_timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/client/session/base.py", line 254, in __call__
+    return cast(TelegramType, await middleware(bot, method))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/client/session/aiohttp.py", line 178, in make_request
+    response = self.check_response(
+               ^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/aiogram/client/session/base.py", line 120, in check_response
+    raise TelegramBadRequest(method=method, message=description)
+aiogram.exceptions.TelegramBadRequest: Telegram server says - Bad Request: message can't be edited
+2025-08-24 01:17:00,050 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-24 01:18:51,817 - app.utils.decorators - ERROR - Error in process_campaign_message: 'campaign_message'
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/campaigns.py", line 745, in process_campaign_message
+    message=data["campaign_message"],
+            ~~~~^^^^^^^^^^^^^^^^^^^^
+KeyError: 'campaign_message'
+2025-08-24 01:24:43,676 - aiogram.dispatcher - WARNING - Received SIGTERM signal
+2025-08-24 01:28:11,263 - app.utils.decorators - ERROR - Error in select_campaign_type: 'start' is not a valid SenderType
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/campaigns.py", line 151, in select_campaign_type
+    sender_type = SenderType(campaign_type)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 751, in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 1170, in __new__
+    raise ve_exc
+ValueError: 'start' is not a valid SenderType
+2025-08-24 01:28:44,126 - app.utils.decorators - ERROR - Error in select_campaign_type: 'stats' is not a valid SenderType
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/campaigns.py", line 151, in select_campaign_type
+    sender_type = SenderType(campaign_type)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 751, in __call__
+    return cls.__new__(cls, value)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/enum.py", line 1170, in __new__
+    raise ve_exc
+ValueError: 'stats' is not a valid SenderType
+2025-08-24 01:28:54,214 - app.utils.decorators - ERROR - Error in ai_assistant_menu: ai_assistant_menu() got an unexpected keyword argument 'user'
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/utils/decorators.py", line 142, in wrapper
+    return await func(event, *args, **kwargs)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: ai_assistant_menu() got an unexpected keyword argument 'user'
+2025-08-24 01:29:44,699 - app.utils.decorators - ERROR - Error in back_to_analytics_menu: 1 validation error for Message
+from_user
+  Instance is frozen [type=frozen_instance, input_value=User(id=6144039792, is_bo...rts_inline_queries=None), input_type=User]
+    For further information visit https://errors.pydantic.dev/2.5/v/frozen_instance
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/analytics.py", line 409, in back_to_analytics_menu
+    fake_message.from_user = callback.from_user
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 780, in __setattr__
+    self._check_frozen(name, value)
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 844, in _check_frozen
+    raise pydantic_core.ValidationError.from_exception_data(self.__class__.__name__, [error])
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Message
+from_user
+  Instance is frozen [type=frozen_instance, input_value=User(id=6144039792, is_bo...rts_inline_queries=None), input_type=User]
+    For further information visit https://errors.pydantic.dev/2.5/v/frozen_instance
+2025-08-24 01:29:47,578 - app.utils.decorators - ERROR - Error in back_to_analytics_menu: 1 validation error for Message
+from_user
+  Instance is frozen [type=frozen_instance, input_value=User(id=6144039792, is_bo...rts_inline_queries=None), input_type=User]
+    For further information visit https://errors.pydantic.dev/2.5/v/frozen_instance
+Traceback (most recent call last):
+  File "/app/app/utils/decorators.py", line 151, in wrapper
+    return await func(event, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/app/app/handlers/analytics.py", line 409, in back_to_analytics_menu
+    fake_message.from_user = callback.from_user
+    ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 780, in __setattr__
+    self._check_frozen(name, value)
+  File "/usr/local/lib/python3.12/site-packages/pydantic/main.py", line 844, in _check_frozen
+    raise pydantic_core.ValidationError.from_exception_data(self.__class__.__name__, [error])
+pydantic_core._pydantic_core.ValidationError: 1 validation error for Message
+from_user
+  Instance is frozen [type=frozen_instance, input_value=User(id=6144039792, is_bo...rts_inline_queries=None), input_type=User]
+    For further information visit https://errors.pydantic.dev/2.5/v/frozen_instance
